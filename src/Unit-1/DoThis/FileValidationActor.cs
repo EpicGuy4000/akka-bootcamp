@@ -1,15 +1,17 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Akka.Actor;
 
 namespace WinTail
 {
     public class FileValidationActor : UntypedActor
     {
-        private readonly IActorRef _consoleWriterActor;
-        
-        public FileValidationActor(IActorRef consoleWriterActor)
+        private IActorRef _consoleWriterActor;
+
+        protected override void PreStart()
         {
-            _consoleWriterActor = consoleWriterActor;
+            _consoleWriterActor = Context.ActorSelection("akka://MyActorSystem/user/consoleWriterActor")
+                .Ask<ActorIdentity>(new Identify(Guid.NewGuid())).Result.Subject;
         }
 
         protected override void OnReceive(object message)

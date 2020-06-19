@@ -11,7 +11,7 @@ namespace WinTail
         protected override void PreStart()
         {
             _consoleWriterActor = Context.ActorSelection("akka://MyActorSystem/user/consoleWriterActor")
-                .Ask<ActorIdentity>(new Identify(Guid.NewGuid())).Result.Subject;
+                .Ask<ActorIdentity>(new Identify(Guid.NewGuid())).GetAwaiter().GetResult().Subject;
         }
 
         protected override void OnReceive(object message)

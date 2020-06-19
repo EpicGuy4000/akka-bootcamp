@@ -32,7 +32,8 @@
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.sysChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            ((System.ComponentModel.ISupportInitialize)(this.sysChart)).BeginInit();
+            this.addSeriesBtn = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize) (this.sysChart)).BeginInit();
             this.SuspendLayout();
             // 
             // sysChart
@@ -52,24 +53,35 @@
             this.sysChart.TabIndex = 0;
             this.sysChart.Text = "sysChart";
             // 
+            // addSeriesBtn
+            // 
+            this.addSeriesBtn.Location = new System.Drawing.Point(586, 345);
+            this.addSeriesBtn.Name = "addSeriesBtn";
+            this.addSeriesBtn.Size = new System.Drawing.Size(75, 23);
+            this.addSeriesBtn.TabIndex = 1;
+            this.addSeriesBtn.Text = "Add Series";
+            this.addSeriesBtn.UseVisualStyleBackColor = true;
+            this.addSeriesBtn.Click += new System.EventHandler(this.addSeriesBtn_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(684, 446);
+            this.Controls.Add(this.addSeriesBtn);
             this.Controls.Add(this.sysChart);
             this.Name = "Main";
             this.Text = "System Metrics";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
             this.Load += new System.EventHandler(this.Main_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.sysChart)).EndInit();
+            ((System.ComponentModel.ISupportInitialize) (this.sysChart)).EndInit();
             this.ResumeLayout(false);
-
         }
 
-        #endregion
-
+        private System.Windows.Forms.Button addSeriesBtn;
         private System.Windows.Forms.DataVisualization.Charting.Chart sysChart;
+
+        #endregion
     }
 }
 

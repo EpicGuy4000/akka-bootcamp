@@ -35,6 +35,7 @@
             this.btn_Cpu = new System.Windows.Forms.Button();
             this.btn_Memory = new System.Windows.Forms.Button();
             this.btn_Disk = new System.Windows.Forms.Button();
+            this.btn_PauseResume = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize) (this.sysChart)).BeginInit();
             this.SuspendLayout();
             // 
@@ -85,11 +86,22 @@
             this.btn_Disk.UseVisualStyleBackColor = true;
             this.btn_Disk.Click += new System.EventHandler(this.btn_Disk_Click);
             // 
+            // btn_PauseResume
+            // 
+            this.btn_PauseResume.Location = new System.Drawing.Point(565, 185);
+            this.btn_PauseResume.Name = "btn_PauseResume";
+            this.btn_PauseResume.Size = new System.Drawing.Size(101, 55);
+            this.btn_PauseResume.TabIndex = 4;
+            this.btn_PauseResume.Text = "Pause ||";
+            this.btn_PauseResume.UseVisualStyleBackColor = true;
+            this.btn_PauseResume.Click += new System.EventHandler(this.btn_PauseResume_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(684, 446);
+            this.Controls.Add(this.btn_PauseResume);
             this.Controls.Add(this.btn_Disk);
             this.Controls.Add(this.btn_Memory);
             this.Controls.Add(this.btn_Cpu);
@@ -105,6 +117,7 @@
         private System.Windows.Forms.Button btn_Cpu;
         private System.Windows.Forms.Button btn_Disk;
         private System.Windows.Forms.Button btn_Memory;
+        private System.Windows.Forms.Button btn_PauseResume;
         private System.Windows.Forms.DataVisualization.Charting.Chart sysChart;
 
         #endregion

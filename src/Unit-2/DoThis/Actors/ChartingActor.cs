@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Akka.Actor;
 using ChartApp.Actors.ChartingMessages;
@@ -40,6 +41,8 @@ namespace ChartApp.Actors
 
             public string SeriesName { get; }
         }
+        
+        public class TogglePause { }
 
         #endregion
 
@@ -48,20 +51,48 @@ namespace ChartApp.Actors
 
         private readonly Chart _chart;
         private Dictionary<string, Series> _seriesIndex;
+        private readonly Button _pauseButton;
 
-        public ChartingActor(Chart chart) : this(chart, new Dictionary<string, Series>())
+        public ChartingActor(Chart chart, Button pauseButton) : this(chart, new Dictionary<string, Series>(), pauseButton)
         {
         }
 
-        private ChartingActor(Chart chart, Dictionary<string, Series> seriesIndex)
+        private ChartingActor(Chart chart, Dictionary<string, Series> seriesIndex, Button pauseButton)
         {
             _chart = chart;
             _seriesIndex = seriesIndex;
+            _pauseButton = pauseButton;
 
+            Charting();
+        }
+
+        private void Charting()
+        {
             Receive<InitializeChart>(HandleInitialize);
             Receive<AddSeries>(HandleAddSeries);
             Receive<RemoveSeries>(HandleRemoveSeries);
             Receive<Metric>(HandleMetrics);
+
+            Receive<TogglePause>(_ =>
+            {
+                SetPauseButtonText(true);
+                BecomeStacked(Paused);
+            });
+        }
+
+        private void Paused()
+        {
+            Receive<Metric>(HandleMetricsPaused);
+            Receive<TogglePause>(_ =>
+            {
+                SetPauseButtonText(false);
+                UnbecomeStacked();
+            });
+        }
+
+        private void SetPauseButtonText(bool isPaused)
+        {
+            _pauseButton.Text = !isPaused ? "PAUSE ||" : "RESUME ->";
         }
 
         private void SetChartBoundaries()
@@ -82,7 +113,28 @@ namespace ChartApp.Actors
             area.AxisY.Maximum = maxAxisY;
         }
 
+        private void AddValueForSeries(string seriesName, double value)
+        {
+            var series = _seriesIndex[seriesName];
+            series.Points.AddXY(_xPosCounter++, value);
+
+            while (series.Points.Count > MaxPoints)
+            {
+                series.Points.RemoveAt(0);
+            }
+
+            SetChartBoundaries();
+        }
+
         #region Individual Message Type Handlers
+
+        private void HandleMetricsPaused(Metric metric)
+        {
+            if (string.IsNullOrEmpty(metric.Series)
+                || !_seriesIndex.ContainsKey(metric.Series)) return;
+            
+            AddValueForSeries(metric.Series, 0.0d);
+        }
 
         private void HandleAddSeries(AddSeries series)
         {
@@ -106,16 +158,8 @@ namespace ChartApp.Actors
         private void HandleMetrics(Metric metric)
         {
             if (string.IsNullOrEmpty(metric.Series) || !_seriesIndex.ContainsKey(metric.Series)) return;
-            
-            var series = _seriesIndex[metric.Series];
-            series.Points.AddXY(_xPosCounter++, metric.CounterValue);
-                
-            while (series.Points.Count > MaxPoints)
-            {
-                series.Points.RemoveAt(0);
-            }
-                
-            SetChartBoundaries();
+
+            AddValueForSeries(metric.Series, metric.CounterValue);
         }
 
         private void HandleInitialize(InitializeChart ic)

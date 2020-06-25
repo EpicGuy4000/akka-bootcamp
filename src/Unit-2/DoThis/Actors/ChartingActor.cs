@@ -8,7 +8,7 @@ using ChartApp.Actors.ChartingMessages;
 
 namespace ChartApp.Actors
 {
-    public class ChartingActor : ReceiveActor
+    public class ChartingActor : ReceiveActor, IWithUnboundedStash
     {
         #region Messages
 
@@ -87,7 +87,11 @@ namespace ChartApp.Actors
             {
                 SetPauseButtonText(false);
                 UnbecomeStacked();
+                
+                Stash.UnstashAll();
             });
+            
+            ReceiveAny(_ => Stash.Stash());
         }
 
         private void SetPauseButtonText(bool isPaused)
@@ -193,5 +197,7 @@ namespace ChartApp.Actors
         }
 
         #endregion
+
+        public IStash Stash { get; set; }
     }
 }
